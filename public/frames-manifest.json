@@ -1,0 +1,16 @@
+{
+  "desktop": {
+    "totalFrames": 420,
+    "fps": 25.93,
+    "width": 1920,
+    "height": 1080,
+    "format": "jpg"
+  },
+  "mobile": {
+    "totalFrames": 420,
+    "fps": 25.93,
+    "width": 900,
+    "height": 1200,
+    "format": "jpg"
+  }
+}
