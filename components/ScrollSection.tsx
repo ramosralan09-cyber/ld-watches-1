@@ -67,11 +67,9 @@ export default function ScrollSection() {
   const lastSegIdxRef = useRef(0);
 
   // DOM refs for scroll-driven updates (avoid React re-renders in scroll loop)
-  const overlayRef = useRef<HTMLDivElement>(null);
   const labelWrapRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const subtextRef = useRef<HTMLParagraphElement>(null);
+  const labelRef = useRef<HTMLHeadingElement>(null);
+  const headlineRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -230,21 +228,12 @@ export default function ScrollSection() {
             }
 
             // Update DOM directly — no React state in scroll loop
-            if (overlayRef.current) {
-              overlayRef.current.style.opacity = String(opacity);
-              overlayRef.current.style.transform = `translateY(${
-                (1 - Math.min(1, opacity * 2)) * 18
-              }px)`;
-            }
             if (labelWrapRef.current) {
-              labelWrapRef.current.style.opacity = String(
-                sp > 0.08 && sp < 0.92 ? 0.65 : 0
-              );
+              labelWrapRef.current.style.opacity = String(opacity);
             }
             if (labelRef.current) labelRef.current.textContent = seg.label;
             if (headlineRef.current)
               headlineRef.current.textContent = seg.headline;
-            if (subtextRef.current) subtextRef.current.textContent = seg.subtext;
 
             // Popup: debounce on segment midpoint
             lastScrollTimeRef.current = Date.now();
@@ -316,58 +305,44 @@ export default function ScrollSection() {
           }}
         />
 
-        {/* Segment label */}
+        {/* Main text — large category label + subheadline, centered ~20% from top */}
         <div
           ref={labelWrapRef}
-          className="absolute top-24 left-1/2 -translate-x-1/2 pointer-events-none"
-          style={{ opacity: 0, transition: "opacity 0.5s ease" }}
-        >
-          <span
-            ref={labelRef}
-            className="px-4 py-1.5 text-xs tracking-[0.28em] uppercase text-gold/80"
-            style={{
-              fontFamily: "var(--font-sans)",
-              background: "rgba(10,10,10,0.35)",
-              backdropFilter: "blur(6px)",
-              border: "1px solid rgba(201,168,76,0.3)",
-            }}
-          >
-            CARTERAS
-          </span>
-        </div>
-
-        {/* Text overlay */}
-        <div
-          ref={overlayRef}
-          className="absolute bottom-20 lg:bottom-24 left-0 right-0 px-8 lg:px-20 xl:px-28 pointer-events-none"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center text-center pointer-events-none"
           style={{
+            top: "18vh",
             opacity: 0,
-            transition: "opacity 0.35s ease, transform 0.35s ease",
+            width: "min(90vw, 900px)",
           }}
         >
           <h2
-            ref={headlineRef}
-            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white mb-3"
+            ref={labelRef}
             style={{
               fontFamily: "var(--font-serif)",
-              fontWeight: 300,
-              lineHeight: 1.08,
-              textShadow: "0 2px 24px rgba(0,0,0,0.55)",
+              fontWeight: 700,
+              fontSize: "clamp(3rem, 8vw, 7rem)",
+              color: "#ffffff",
+              letterSpacing: "0.15em",
+              lineHeight: 1,
+              textShadow: "0 2px 40px rgba(0,0,0,0.8)",
+              textTransform: "uppercase",
+            }}
+          >
+            CARTERAS
+          </h2>
+          <p
+            ref={headlineRef}
+            className="mt-5"
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontWeight: 400,
+              fontSize: "clamp(0.95rem, 2vw, 1.25rem)",
+              color: "rgba(255,255,255,0.85)",
+              letterSpacing: "0.04em",
+              textShadow: "0 1px 20px rgba(0,0,0,0.9)",
             }}
           >
             Estilo en tus manos
-          </h2>
-          <p
-            ref={subtextRef}
-            className="text-cream/65 text-base lg:text-lg max-w-sm"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 300,
-              textShadow: "0 1px 10px rgba(0,0,0,0.5)",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Carteras premium para el hombre que sabe lo que quiere
           </p>
         </div>
 
@@ -394,7 +369,7 @@ export default function ScrollSection() {
             />
           </div>
           <span
-            className="text-[10px] tracking-[0.3em] uppercase text-cream/30"
+            className="text-[10px] tracking-[0.3em] uppercase text-cream/60"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             Scroll

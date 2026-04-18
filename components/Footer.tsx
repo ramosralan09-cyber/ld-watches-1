@@ -26,19 +26,19 @@ export default function Footer() {
           <div className="lg:col-span-2 flex flex-col gap-5">
             <LDLogo size={60} variant="light" />
             <p
-              className="text-cream/40 text-sm leading-relaxed max-w-xs"
+              className="text-cream/75 text-sm leading-relaxed max-w-xs"
               style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
             >
               Donde el tiempo, se vuelve estilo.
             </p>
             <p
-              className="text-cream/30 text-xs leading-relaxed max-w-xs"
+              className="text-cream/65 text-xs leading-relaxed max-w-xs"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               Ajuste de medidas · Cambio de batería · Pedidos especiales
             </p>
             <p
-              className="text-gold/50 text-xs italic"
+              className="text-gold/75 text-xs italic"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               Disponible para collabs con marcas y modelos
@@ -48,21 +48,21 @@ export default function Footer() {
           {/* Nav col */}
           <div>
             <p
-              className="text-xs tracking-[0.28em] uppercase text-gold/50 mb-5"
+              className="text-xs tracking-[0.28em] uppercase text-gold/70 mb-5"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               Colecciones
             </p>
             <nav className="flex flex-col gap-3">
               {[
-                { label: "Relojes", href: "#relojes" },
-                { label: "Carteras", href: "#carteras" },
-                { label: "Cadenas", href: "#cadenas" },
+                { label: "Relojes", href: "/relojes" },
+                { label: "Carteras", href: "/carteras" },
+                { label: "Cadenas", href: "/cadenas" },
               ].map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-cream/45 text-sm hover:text-cream transition-colors"
+                  className="text-cream/75 text-sm hover:text-white transition-colors"
                   style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
                 >
                   {link.label}
@@ -74,7 +74,7 @@ export default function Footer() {
           {/* Contact col */}
           <div>
             <p
-              className="text-xs tracking-[0.28em] uppercase text-gold/50 mb-5"
+              className="text-xs tracking-[0.28em] uppercase text-gold/70 mb-5"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               Contacto
@@ -84,7 +84,7 @@ export default function Footer() {
                 href="https://www.instagram.com/ld_watches_"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-cream/45 text-sm hover:text-gold transition-colors"
+                className="flex items-center gap-2 text-cream/75 text-sm hover:text-gold transition-colors"
                 style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
               >
                 <svg
@@ -107,7 +107,7 @@ export default function Footer() {
                 href="https://wa.me/17873225386?text=Hola%20Larry%2C%20vi%20tu%20p%C3%A1gina%20y%20quiero%20saber%20m%C3%A1s%20sobre%20un%20producto"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-cream/45 text-sm hover:text-gold transition-colors"
+                className="flex items-center gap-2 text-cream/75 text-sm hover:text-gold transition-colors"
                 style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
               >
                 <svg
@@ -125,7 +125,7 @@ export default function Footer() {
                 787-322-5386
               </a>
               <p
-                className="flex items-start gap-2 text-cream/35 text-xs mt-1"
+                className="flex items-start gap-2 text-cream/65 text-xs mt-1"
                 style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
               >
                 <svg
@@ -156,13 +156,13 @@ export default function Footer() {
           style={{ borderTop: "1px solid rgba(201,168,76,0.08)" }}
         >
           <p
-            className="text-cream/20 text-xs"
+            className="text-cream/55 text-xs"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             © {year} LD Watches. Todos los derechos reservados.
           </p>
           <p
-            className="text-cream/15 text-xs italic"
+            className="text-cream/45 text-xs italic"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             Donde el tiempo, se vuelve estilo

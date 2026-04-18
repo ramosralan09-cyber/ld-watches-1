@@ -68,7 +68,7 @@ export default function InstagramCTA() {
         {/* Headline */}
         <div style={{ opacity: 0, transform: "translateY(28px)" }}>
           <p
-            className="text-xs tracking-[0.35em] uppercase text-gold/60 mb-4"
+            className="text-xs tracking-[0.35em] uppercase text-gold/80 mb-4"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             Síguenos
@@ -95,7 +95,7 @@ export default function InstagramCTA() {
             className="block w-10 h-px bg-gold/40 mx-auto mb-5"
           />
           <p
-            className="text-cream/50 text-lg tracking-[0.12em]"
+            className="text-cream/85 text-lg tracking-[0.12em]"
             style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
           >
             @ld_watches_
@@ -132,7 +132,7 @@ export default function InstagramCTA() {
         {/* WhatsApp line */}
         <div style={{ opacity: 0, transform: "translateY(28px)" }}>
           <p
-            className="text-cream/35 text-sm leading-relaxed"
+            className="text-cream/75 text-sm leading-relaxed"
             style={{ fontFamily: "var(--font-sans)", fontWeight: 300 }}
           >
             ¿Buscas algo específico?{" "}
@@ -140,7 +140,7 @@ export default function InstagramCTA() {
               href="https://wa.me/17873225386?text=Hola%20Larry%2C%20vi%20tu%20p%C3%A1gina%20y%20quiero%20saber%20m%C3%A1s%20sobre%20un%20producto"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gold/60 hover:text-gold transition-colors underline underline-offset-4"
+              className="text-gold/85 hover:text-gold transition-colors underline underline-offset-4"
             >
               Llámame que yo lo consigo.
             </a>

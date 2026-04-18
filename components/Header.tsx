@@ -5,10 +5,10 @@ import Link from "next/link";
 import LDLogo from "./LDLogo";
 
 const NAV_LINKS = [
-  { label: "Relojes", href: "#relojes" },
-  { label: "Carteras", href: "#carteras" },
-  { label: "Cadenas", href: "#cadenas" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Relojes", href: "/#relojes" },
+  { label: "Carteras", href: "/#carteras" },
+  { label: "Cadenas", href: "/#cadenas" },
+  { label: "Contacto", href: "/#contacto" },
 ];
 
 export default function Header() {
@@ -57,7 +57,7 @@ export default function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-cream/70 hover:text-cream transition-colors text-sm tracking-[0.12em] uppercase"
+                className="text-cream/90 hover:text-white transition-colors text-sm tracking-[0.12em] uppercase"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {link.label}
