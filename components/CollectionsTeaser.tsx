@@ -17,6 +17,12 @@ const COLLECTIONS = [
     desc: "Accesorios que hablan por ti",
     href: "/cadenas",
   },
+  {
+    num: "04",
+    name: "Gafas",
+    desc: "Estilo que se nota desde lejos",
+    href: "/gafas",
+  },
 ];
 
 export default function CollectionsTeaser() {
@@ -53,8 +59,8 @@ export default function CollectionsTeaser() {
           </p>
         </div>
 
-        {/* 3 collection cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+        {/* 4 collection cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-5">
           {COLLECTIONS.map((col) => (
             <a
               key={col.href}

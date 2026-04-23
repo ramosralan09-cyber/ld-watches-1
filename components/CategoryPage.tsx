@@ -2,9 +2,17 @@ import Link from "next/link";
 import Header from "./Header";
 import Footer from "./Footer";
 import WhatsAppButton from "./WhatsAppButton";
+import SpinningHeroImage from "./SpinningHeroImage";
 import inventory from "@/data/inventory.json";
 
-type Category = "relojes" | "carteras" | "cadenas";
+type Category = "relojes" | "carteras" | "cadenas" | "gafas";
+
+const CATEGORY_IMAGES: Record<Category, string> = {
+  relojes: "/relojes.png",
+  carteras: "/carteras.png",
+  cadenas: "/cadenas.webp",
+  gafas: "/gafas.png",
+};
 
 interface Product {
   id: string;
@@ -43,6 +51,13 @@ const CONFIGS: Record<Category, CategoryConfig> = {
     description: "Accesorios que hablan por ti",
     heroSub:
       "Cadenas y accesorios seleccionados a mano. Piezas que hacen la diferencia.",
+  },
+  gafas: {
+    label: "Gafas",
+    tagline: "Estilo que se nota desde lejos",
+    description: "Monturas para cada personalidad",
+    heroSub:
+      "Gafas seleccionadas a mano. Estilo que se nota desde lejos.",
   },
 };
 
@@ -161,7 +176,7 @@ function ProductCard({ product }: { product: Product }) {
 export default function CategoryPage({ category }: { category: Category }) {
   const cfg = CONFIGS[category];
   const products: Product[] =
-    inventory[category as keyof typeof inventory] as Product[];
+    (inventory as Record<string, Product[]>)[category] ?? [];
   const hasProducts = products.some((p) => p.name || p.image);
 
   return (
@@ -182,7 +197,8 @@ export default function CategoryPage({ category }: { category: Category }) {
             }}
           />
 
-          <div className="relative max-w-7xl mx-auto">
+          <div className="relative max-w-7xl mx-auto flex items-center justify-between gap-8">
+            <div className="flex-1 min-w-0">
             {/* Back link */}
             <Link
               href="/"
@@ -241,6 +257,15 @@ export default function CategoryPage({ category }: { category: Category }) {
               >
                 Ver en Instagram →
               </a>
+            </div>
+            </div>
+
+            {/* Spinning hero image */}
+            <div className="hidden lg:flex flex-shrink-0 items-center">
+              <SpinningHeroImage
+                src={CATEGORY_IMAGES[category]}
+                alt={cfg.label}
+              />
             </div>
           </div>
         </section>

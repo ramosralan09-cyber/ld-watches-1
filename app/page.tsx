@@ -1,19 +1,17 @@
-import LoadingScreen from "@/components/LoadingScreen";
 import Header from "@/components/Header";
-import ScrollSection from "@/components/ScrollSection";
-import InstagramCTA from "@/components/InstagramCTA";
+import HeroGroup from "@/components/HeroGroup";
 import CollectionsTeaser from "@/components/CollectionsTeaser";
+import InstagramCTA from "@/components/InstagramCTA";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Home() {
   return (
     <main>
-      <LoadingScreen />
       <Header />
-      <ScrollSection />
-      <InstagramCTA />
+      <HeroGroup />
       <CollectionsTeaser />
+      <InstagramCTA />
       <Footer />
       <WhatsAppButton />
     </main>

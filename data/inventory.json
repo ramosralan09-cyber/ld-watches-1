@@ -76,5 +76,15 @@
       "description": "",
       "instagramUrl": "https://www.instagram.com/ld_watches_"
     }
+  ],
+  "gafas": [
+    {
+      "id": "g1",
+      "name": "",
+      "price": "",
+      "image": "",
+      "description": "",
+      "instagramUrl": "https://www.instagram.com/ld_watches_"
+    }
   ]
 }
