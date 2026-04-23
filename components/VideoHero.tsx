@@ -7,8 +7,8 @@ interface VideoHeroProps {
   onEnded: () => void;
 }
 
-const DESKTOP_SRC = "/video/new home.mp4";
-const MOBILE_SRC = "/video/new home mobile.mp4";
+const DESKTOP_SRC = "/video/new-home.mp4";
+const MOBILE_SRC = "/video/new-home-mobile.mp4";
 
 export default function VideoHero({ onEnded }: VideoHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -50,6 +50,7 @@ export default function VideoHero({ onEnded }: VideoHeroProps) {
           autoPlay
           muted
           playsInline
+          loop={false}
           onLoadedData={() => setIsLoaded(true)}
           onEnded={onEnded}
           style={{
