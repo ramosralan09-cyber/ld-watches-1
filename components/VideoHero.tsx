@@ -7,8 +7,8 @@ interface VideoHeroProps {
   onEnded: () => void;
 }
 
-const DESKTOP_SRC = "/video/new-home.mp4";
-const MOBILE_SRC = "/video/new-home-mobile.mp4";
+const DESKTOP_SRC = "/video/video desktop new.mp4";
+const MOBILE_SRC = "/video/video mobile new.mp4";
 
 export default function VideoHero({ onEnded }: VideoHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
