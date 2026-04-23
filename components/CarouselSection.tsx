@@ -1,95 +1,36 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ITEMS = [
-  { id: "relojes", label: "RELOJES", src: "/relojes.png", route: "/relojes" },
-  { id: "carteras", label: "CARTERAS", src: "/carteras.png", route: "/carteras" },
-  { id: "cadenas", label: "CADENAS", src: "/cadenas.webp", route: "/cadenas" },
-  { id: "gafas", label: "GAFAS", src: "/gafas.png", route: "/gafas" },
+  { id: "relojes",  label: "RELOJES",  src: "/relojes.png",   route: "/relojes"  },
+  { id: "carteras", label: "CARTERAS", src: "/carteras.png",   route: "/carteras" },
+  { id: "cadenas",  label: "CADENAS",  src: "/cadenas.webp",   route: "/cadenas"  },
+  { id: "gafas",    label: "GAFAS",    src: "/gafas.png",      route: "/gafas"    },
 ] as const;
+
+// Arc offset per item index: outer items sit lower than center items.
+const ARC_Y = [40, 15, 15, 40];
 
 export default function CarouselSection() {
   const router = useRouter();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [centerIdx, setCenterIdx] = useState(1);
-  const [spinningIdx, setSpinningIdx] = useState<number | null>(null);
-
-  // Drag state
-  const isDragging = useRef(false);
-  const hasDragged = useRef(false);
-  const startX = useRef(0);
-  const scrollStart = useRef(0);
-  const velX = useRef(0);
-  const lastX = useRef(0);
-  const rafRef = useRef<number | null>(null);
-
-  const detectCenter = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const mid = el.scrollLeft + el.clientWidth / 2;
-    const items = el.querySelectorAll<HTMLElement>("[data-item]");
-    let best = 0;
-    let bestDist = Infinity;
-    items.forEach((item, i) => {
-      const dist = Math.abs(item.offsetLeft + item.offsetWidth / 2 - mid);
-      if (dist < bestDist) { bestDist = dist; best = i; }
-    });
-    setCenterIdx(best);
-  }, []);
+  const [hoveredItem, setHoveredItem]   = useState<string | null>(null);
+  const [spinningItem, setSpinningItem] = useState<string | null>(null);
+  const [isMobile, setIsMobile]         = useState(() => {
+    try { return window.innerWidth < 1024; } catch { return false; }
+  });
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const id = setTimeout(detectCenter, 120);
-    el.addEventListener("scroll", detectCenter, { passive: true });
-    return () => {
-      el.removeEventListener("scroll", detectCenter);
-      clearTimeout(id);
-    };
-  }, [detectCenter]);
+    const onResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-  const cancelMomentum = () => {
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-  };
-
-  const onMouseDown = (e: React.MouseEvent) => {
-    cancelMomentum();
-    isDragging.current = true;
-    hasDragged.current = false;
-    startX.current = e.clientX;
-    lastX.current = e.clientX;
-    scrollStart.current = containerRef.current?.scrollLeft ?? 0;
-    velX.current = 0;
-  };
-
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const dx = e.clientX - startX.current;
-    if (Math.abs(dx) > 5) hasDragged.current = true;
-    velX.current = e.clientX - lastX.current;
-    lastX.current = e.clientX;
-    if (containerRef.current) containerRef.current.scrollLeft = scrollStart.current - dx;
-  };
-
-  const onMouseUp = () => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    const applyMomentum = () => {
-      if (Math.abs(velX.current) < 0.5) return;
-      if (containerRef.current) containerRef.current.scrollLeft -= velX.current;
-      velX.current *= 0.92;
-      rafRef.current = requestAnimationFrame(applyMomentum);
-    };
-    rafRef.current = requestAnimationFrame(applyMomentum);
-  };
-
-  const handleClick = (idx: number, route: string) => {
-    if (hasDragged.current) return;
-    if (spinningIdx !== null) return;
-    setSpinningIdx(idx);
+  const handleClick = (id: string, route: string) => {
+    if (spinningItem !== null) return;
+    setSpinningItem(id);
     setTimeout(() => router.push(route), 600);
   };
 
@@ -102,9 +43,12 @@ export default function CarouselSection() {
         background: "#0A0A0A",
         position: "relative",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
+        padding: "60px 0",
+        boxSizing: "border-box",
       }}
     >
       {/* Grid overlay */}
@@ -136,129 +80,179 @@ export default function CarouselSection() {
         }}
       />
 
-      {/* Carousel track */}
-      <div
-        ref={containerRef}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseUp}
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "clamp(32px, 5.5vw, 80px)",
-          padding: "0 clamp(24px, 8vw, 120px)",
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          cursor: isDragging.current ? "grabbing" : "grab",
-          alignItems: "center",
-          width: "100%",
-          userSelect: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {ITEMS.map((item, idx) => (
-          <CarouselItem
-            key={item.id}
-            label={item.label}
-            src={item.src}
-            isCenter={centerIdx === idx}
-            isSpinning={spinningIdx === idx}
-            floatDelay={idx * 0.3}
-            onClick={() => handleClick(idx, item.route)}
-          />
-        ))}
-      </div>
-
-      <style>{`
-        @keyframes floatItem {
-          0%, 100% { transform: translateY(0px); }
-          50%       { transform: translateY(-8px); }
-        }
-        @keyframes spinCarouselItem {
-          0%   { transform: rotateY(0deg) scale(1); }
-          50%  { transform: rotateY(180deg) scale(1.4); }
-          100% { transform: rotateY(360deg) scale(1.4); }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-interface CarouselItemProps {
-  label: string;
-  src: string;
-  isCenter: boolean;
-  isSpinning: boolean;
-  floatDelay: number;
-  onClick: () => void;
-}
-
-function CarouselItem({ label, src, isCenter, isSpinning, floatDelay, onClick }: CarouselItemProps) {
-  const imgSize = "clamp(140px, 14vw, 200px)";
-  const fontSize = "clamp(1.4rem, 2vw, 2.5rem)";
-
-  const scale = isCenter ? 1.15 : 0.9;
-  const labelOpacity = isCenter ? 1 : 0.5;
-  const glowSpread = isCenter ? "0 0 40px 8px rgba(201,168,76,0.38)" : "0 0 18px 3px rgba(201,168,76,0.12)";
-
-  return (
-    <div
-      data-item
-      onClick={onClick}
-      style={{
-        flexShrink: 0,
-        scrollSnapAlign: "center",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "20px",
-        cursor: "pointer",
-        perspective: "800px",
-        transform: isSpinning ? undefined : `scale(${scale})`,
-        transition: isSpinning ? "none" : "transform 0.4s ease",
-        animation: isSpinning ? "spinCarouselItem 0.6s ease-in-out forwards" : undefined,
-      }}
-    >
-      {/* Label above */}
-      <p
-        style={{
-          fontFamily: "var(--font-serif)",
-          fontSize,
-          color: "#FFFFFF",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          opacity: labelOpacity,
-          transition: "opacity 0.4s ease",
-          userSelect: "none",
-          whiteSpace: "nowrap",
-          margin: 0,
-        }}
-      >
-        {label}
-      </p>
-
-      {/* Image with glow rim */}
+      {/* ── Header ── */}
       <div
         style={{
           position: "relative",
-          width: imgSize,
-          height: imgSize,
-          boxShadow: glowSpread,
-          transition: "box-shadow 0.4s ease",
-          animation: isSpinning ? "none" : `floatItem 3s ease-in-out ${floatDelay}s infinite`,
+          zIndex: 1,
+          textAlign: "center",
+          marginBottom: "60px",
         }}
       >
-        <Image
-          src={src}
-          alt={label}
-          fill
-          style={{ objectFit: "contain" }}
-          sizes="(max-width: 1024px) 140px, 200px"
-          draggable={false}
-        />
+        <p
+          style={{
+            fontFamily: "monospace",
+            fontSize: "0.7rem",
+            letterSpacing: "0.3em",
+            color: "#C9A84C",
+            textTransform: "uppercase",
+            margin: "0 0 8px 0",
+          }}
+        >
+          LD WATCHES
+        </p>
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2rem, 4vw, 3.5rem)",
+            color: "#FFFFFF",
+            fontWeight: 300,
+            margin: "0 0 4px 0",
+            lineHeight: 1.1,
+          }}
+        >
+          Explora la colección
+        </h2>
+        <p
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.85rem",
+            color: "rgba(255,255,255,0.4)",
+            letterSpacing: "0.1em",
+            margin: "4px 0 0 0",
+          }}
+        >
+          Selecciona una categoría
+        </p>
       </div>
+
+      {/* ── Items ── */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: isMobile ? "grid" : "flex",
+          ...(isMobile
+            ? {
+                gridTemplateColumns: "1fr 1fr",
+                justifyItems: "center",
+                gap: "32px",
+                padding: "0 24px",
+              }
+            : {
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                gap: "clamp(40px, 6vw, 100px)",
+                padding: "0 5vw",
+              }),
+        }}
+      >
+        {ITEMS.map((item, idx) => {
+          const isHovered  = hoveredItem === item.id;
+          const isSpinning = spinningItem === item.id;
+          const arcY       = isMobile ? 0 : ARC_Y[idx];
+          const liftY      = isHovered ? arcY - 20 : arcY;
+
+          return (
+            <div
+              key={item.id}
+              onMouseEnter={() => setHoveredItem(item.id)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => handleClick(item.id, item.route)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                cursor: "pointer",
+                transform: `translateY(${liftY}px)`,
+                transition: "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              }}
+            >
+              {/* Card */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "16px",
+                  padding: "24px",
+                  borderRadius: "16px",
+                  background:
+                    "radial-gradient(ellipse 80% 80% at 50% 40%, #1c1c1c 0%, #0a0a0a 100%)",
+                  border: `1px solid ${isHovered ? "rgba(201,168,76,0.8)" : "rgba(201,168,76,0.2)"}`,
+                  boxShadow: isHovered ? "0 0 40px rgba(201,168,76,0.5)" : "none",
+                  transition:
+                    "border-color 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s cubic-bezier(0.34,1.56,0.64,1)",
+                  animation: isSpinning
+                    ? "spinCarouselItem 0.6s ease-in-out forwards"
+                    : "none",
+                }}
+              >
+                {/* Label */}
+                <p
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "1.1rem",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: isHovered ? "#FFFFFF" : "rgba(255,255,255,0.6)",
+                    transition: "color 0.3s",
+                    margin: 0,
+                    userSelect: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item.label}
+                </p>
+
+                {/* Image */}
+                <div
+                  style={{
+                    position: "relative",
+                    width: isMobile ? "130px" : "180px",
+                    height: isMobile ? "130px" : "180px",
+                    transform: isHovered ? "scale(1.08)" : "scale(1)",
+                    transition:
+                      "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.label}
+                    fill
+                    style={{ objectFit: "contain" }}
+                    sizes="(max-width: 1023px) 130px, 180px"
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Bottom accent line ── */}
+      <div
+        aria-hidden
+        style={{
+          position: "relative",
+          zIndex: 1,
+          width: "1px",
+          height: "60px",
+          background: "#C9A84C",
+          opacity: 0.4,
+          margin: "40px auto 0",
+        }}
+      />
+
+      <style>{`
+        @keyframes spinCarouselItem {
+          0%   { transform: perspective(800px) rotateY(0deg)   scale(1);   }
+          50%  { transform: perspective(800px) rotateY(180deg) scale(1.3); }
+          100% { transform: perspective(800px) rotateY(360deg) scale(1.3); }
+        }
+      `}</style>
     </div>
   );
 }
